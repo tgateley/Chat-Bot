@@ -20,7 +20,7 @@ class Chatbot:
 
 
 if __name__ == "__main__":
-    chatbot = Chatbox()
+    chatbot = Chatbot()
     response = chatbot.get_response("Write a Joke about birds.")
     print(response)
 

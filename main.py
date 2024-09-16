@@ -1,12 +1,13 @@
 from PyQt6.QtWidgets import QApplication, QMainWindow, QTextEdit, QLineEdit, QPushButton
 import sys
 from backend import Chatbot
-
+import threading
 
 
 class ChatboxWindow(QMainWindow):
     def __init__(self):
         super().__init__()
+        self.chatbot = Chatbot()
 
         self.setMinimumSize(700, 500)
 
@@ -18,12 +19,26 @@ class ChatboxWindow(QMainWindow):
         # Add the input field widget
         self.input_field = QLineEdit(self)
         self.input_field.setGeometry(10, 340, 480, 40)
+        self.input_field.returnPressed.connect(self.send_message)
 
         # Add the submit button
         self.button = QPushButton("Submit", self)
         self.button.setGeometry(500, 340, 100, 40)
+        self.button.clicked.connect(self.send_message)
 
         self.show()
+
+    def send_message(self):
+        user_input = self.input_field.text().strip()
+        self.chat_area.append(f"<p style='color:#663399'>User: {user_input}</p>")
+        self.input_field.clear()
+
+        thread = threading.Thread(target=self.get_bot_response, args=(user_input,))
+        thread.start()
+
+    def get_bot_response(self, user_input):
+        response = self.chatbot.get_response(user_input)
+        self.chat_area.append(f"<p style='color:##B8860B'> Chat Bot: {response}</p>")
 
 
 app = QApplication(sys.argv)
